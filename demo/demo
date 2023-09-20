@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -e
+set -u
+
+if (( $# != 1 )); then
+	echo "Usage: demo path-to-expose"
+	exit 1
+fi
+
+here=$(realpath "$(dirname "$0")")
+there=$(realpath "$1")
+
+volumes=(
+	-v "$here/nginx.conf":/etc/nginx/nginx.conf:ro
+	-v "$here/../style.xsl":/style.xsl:ro
+	-v "$there":/usr/share/nginx/html:ro  ## xx from arg
+)
+
+docker run -it --rm -p 8080:80 "${volumes[@]}" nginx
